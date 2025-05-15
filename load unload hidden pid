@@ -1,0 +1,86 @@
+cselab3@cselab3:~$ sudo su
+[sudo] password for cselab3: 
+root@cselab3:/home/cselab3# vi stealth.c
+root@cselab3:/home/cselab3# vi Makefile
+root@cselab3:/home/cselab3# make
+make -C /lib/modules/6.8.0-52-generic/build M=/home/cselab3 modules
+make[1]: Entering directory '/usr/src/linux-headers-6.8.0-52-generic'
+warning: the compiler differs from the one used to build the kernel
+  The kernel was built by: x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0
+  You are using:           gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0
+make[1]: Leaving directory '/usr/src/linux-headers-6.8.0-52-generic'
+root@cselab3:/home/cselab3# sudo insmod stealth.ko hidden_pid=1234
+root@cselab3:/home/cselab3# dmesg | tail
+[  402.431421] raid6: .... xor() 9504 MB/s, rmw enabled
+[  402.431424] raid6: using avx2x2 recovery algorithm
+[  402.433289] xor: automatically using best checksumming function   avx       
+[  402.563974] Btrfs loaded, zoned=yes, fsverity=yes
+[  753.523151] Stealth Module Loaded
+[  792.912146] Stealth Module Unloaded
+[ 1311.109599] stealth_module: unknown parameter 'hidden_pid' ignored
+[ 1311.109704] Stealth Module Loaded
+[ 1735.847099] stealth: unknown parameter 'hidden_pid' ignored
+[ 1735.847227] [stealth] Loading stealth module
+root@cselab3:/home/cselab3# vi Makefile
+root@cselab3:/home/cselab3# make clean
+make -C /lib/modules/6.8.0-52-generic/build M=/home/cselab3 clean
+make[1]: Entering directory '/usr/src/linux-headers-6.8.0-52-generic'
+  CLEAN   /home/cselab3/Module.symvers
+make[1]: Leaving directory '/usr/src/linux-headers-6.8.0-52-generic'
+root@cselab3:/home/cselab3# make
+make -C /lib/modules/6.8.0-52-generic/build M=/home/cselab3 modules
+make[1]: Entering directory '/usr/src/linux-headers-6.8.0-52-generic'
+warning: the compiler differs from the one used to build the kernel
+  The kernel was built by: x86_64-linux-gnu-gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0
+  You are using:           gcc-12 (Ubuntu 12.3.0-1ubuntu1~22.04) 12.3.0
+  CC [M]  /home/cselab3/stealth.o
+  MODPOST /home/cselab3/Module.symvers
+  CC [M]  /home/cselab3/stealth.mod.o
+  LD [M]  /home/cselab3/stealth.ko
+  BTF [M] /home/cselab3/stealth.ko
+Skipping BTF generation for /home/cselab3/stealth.ko due to unavailability of vmlinux
+make[1]: Leaving directory '/usr/src/linux-headers-6.8.0-52-generic'
+root@cselab3:/home/cselab3# sudo insmod stealth.ko my_pid="9876" 
+root@cselab3:/home/cselab3# dmesg | tail -n 20 
+[  402.312405] JFS: nTxBlock = 8192, nTxLock = 65536
+[  402.324576] ntfs: driver 2.1.32 [Flags: R/O MODULE].
+[  402.350859] QNX4 filesystem 0.2.3 registered.
+[  402.380422] raid6: avx2x4   gen() 13570 MB/s
+[  402.397419] raid6: avx2x2   gen() 14589 MB/s
+[  402.414422] raid6: avx2x1   gen() 13760 MB/s
+[  402.414424] raid6: using algorithm avx2x2 gen() 14589 MB/s
+[  402.431421] raid6: .... xor() 9504 MB/s, rmw enabled
+[  402.431424] raid6: using avx2x2 recovery algorithm
+[  402.433289] xor: automatically using best checksumming function   avx       
+[  402.563974] Btrfs loaded, zoned=yes, fsverity=yes
+[  753.523151] Stealth Module Loaded
+[  792.912146] Stealth Module Unloaded
+[ 1311.109599] stealth_module: unknown parameter 'hidden_pid' ignored
+[ 1311.109704] Stealth Module Loaded
+[ 1735.847099] stealth: unknown parameter 'hidden_pid' ignored
+[ 1735.847227] [stealth] Loading stealth module
+[ 1944.248925] stealth: unknown parameter 'hidden_pid_str' ignored
+[ 1944.249027] [stealth] Loading stealth module
+[ 2370.024251] stealth: Module loaded with my_pid = '9876'
+root@cselab3:/home/cselab3# sudo rmmod stealth 
+root@cselab3:/home/cselab3# dmesg | tail -n 20 
+[  402.324576] ntfs: driver 2.1.32 [Flags: R/O MODULE].
+[  402.350859] QNX4 filesystem 0.2.3 registered.
+[  402.380422] raid6: avx2x4   gen() 13570 MB/s
+[  402.397419] raid6: avx2x2   gen() 14589 MB/s
+[  402.414422] raid6: avx2x1   gen() 13760 MB/s
+[  402.414424] raid6: using algorithm avx2x2 gen() 14589 MB/s
+[  402.431421] raid6: .... xor() 9504 MB/s, rmw enabled
+[  402.431424] raid6: using avx2x2 recovery algorithm
+[  402.433289] xor: automatically using best checksumming function   avx       
+[  402.563974] Btrfs loaded, zoned=yes, fsverity=yes
+[  753.523151] Stealth Module Loaded
+[  792.912146] Stealth Module Unloaded
+[ 1311.109599] stealth_module: unknown parameter 'hidden_pid' ignored
+[ 1311.109704] Stealth Module Loaded
+[ 1735.847099] stealth: unknown parameter 'hidden_pid' ignored
+[ 1735.847227] [stealth] Loading stealth module
+[ 1944.248925] stealth: unknown parameter 'hidden_pid_str' ignored
+[ 1944.249027] [stealth] Loading stealth module
+[ 2370.024251] stealth: Module loaded with my_pid = '9876'
+[ 2530.086057] stealth: Module unloaded
